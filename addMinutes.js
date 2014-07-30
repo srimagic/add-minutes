@@ -11,22 +11,6 @@
 		compute
 		;
 
-    init = function() {
-    	console.log('\n>>>entering init');
-
-    	if (args.length < 5) {
-			console.log("usage: node addMinutes.js <<time>> <<minutes>>");
-			console.log("<<time>> format: [H]H:MM {AM|PM}");
-			console.log("<<minutes>> format: 0 to 60");
-			console.log("example:- `node addMinutes.js 5:00 PM 20` - should return 5:20 PM");
-			process.exit(1);
-		}
-		timeString = args[2];
-		dayNight = args[3];
-		minutesToAdd = args[4];
-		console.log('>>>init success');
-    };
-
     validate = function() {
     	console.log('\n>>>entering validate');
 
@@ -67,7 +51,9 @@
     };
 
     compute = function() {
-    	var oldHourPart = hourPart;
+
+    	var oldHourPart = hourPart,
+    		new_time;
 
     	console.log('\n>>>entering compute');
     	
@@ -78,17 +64,25 @@
     	hourPart = hourPart % 13;
     	minutePart = (minutePart + minutesToAdd) % 60;
 
-    	console.log('>>>compute success');
-
-        return {
+    	new_time = {
         	hour: (hourPart < 10) ? 0 + hourPart.toString() : hourPart.toString(),
         	minute: (minutePart < 10) ? 0 + minutePart.toString() : minutePart.toString(),
         	dayNight: dayNight
-        }
+        };
+
+        console.log("returned time = ", new_time.hour, ":", new_time.minute, " ", new_time.dayNight);
+    	console.log('>>>compute success');
+
+        return new_time
     };
 
-    init();
-    validate();
-    var new_time = compute();
-    console.log("returned time = ", new_time.hour, ":", new_time.minute, " ", new_time.dayNight);
+
+    module.exports = function(_timeString, _dayNight, _minutesToAdd){
+    	timeString = _timeString;
+    	dayNight = _dayNight;
+    	minutesToAdd = _minutesToAdd;
+
+    	validate();
+    	return compute();
+    };
 })();
